@@ -32,6 +32,9 @@ export async function getPieces(db:SQLiteDatabase):Promise<Piece[]> {
 export async function getPiece(db:SQLiteDatabase,id:number):Promise<Piece|null>{
  return await db.getFirstAsync<Piece>(`SELECT p.*,(SELECT referencia FROM peca_fotos WHERE peca_id=p.id ORDER BY ordem LIMIT 1) foto FROM pecas p WHERE p.id=?`,id);
 }
+export async function getPiecePhotos(db:SQLiteDatabase,id:number):Promise<{id:number;referencia:string;ordem:number}[]> {
+ return db.getAllAsync<{id:number;referencia:string;ordem:number}>('SELECT id,referencia,ordem FROM peca_fotos WHERE peca_id=? ORDER BY ordem,id',id);
+}
 export async function getSelection(db:SQLiteDatabase):Promise<Piece[]>{
  return await db.getAllAsync<Piece>(`SELECT p.*,(SELECT referencia FROM peca_fotos WHERE peca_id=p.id ORDER BY ordem LIMIT 1) foto FROM selecao_itens s JOIN pecas p ON p.id=s.peca_id WHERE s.jovem_id=? ORDER BY s.adicionado_em,s.id`,JOVEM);
 }

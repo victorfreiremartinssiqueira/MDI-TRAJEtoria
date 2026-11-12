@@ -1,4 +1,4 @@
-import React,{useMemo} from 'react';
+﻿import React,{useMemo} from 'react';
 import { View,Text,ScrollView,Pressable,StyleSheet,TextInput,ActivityIndicator,Image,KeyboardTypeOptions,Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -36,10 +36,10 @@ export function BrandHeader({compact=false}:{compact?:boolean}){
 const navs=[{key:'inicio',label:'Início',icon:'home-outline',activeIcon:'home',path:'/(jovem)/inicio'},{key:'catalogo',label:'Catálogo',icon:'shirt-outline',activeIcon:'shirt',path:'/(jovem)/catalogo'},{key:'pedidos',label:'Pedidos',icon:'cube-outline',activeIcon:'cube',path:'/(jovem)/meu-pedido'},{key:'perfil',label:'Perfil',icon:'person-outline',activeIcon:'person',path:'/(jovem)/perfil'}] as const;
 export function HangerIcon({size=27,color=colors.purpleDark}:{size?:number;color?:string}){return <Svg height={size} width={size} viewBox="0 0 32 32"><Path d="M14 9a3 3 0 0 1 3-3c2.4 0 4 2.5 2.2 4.5L16 14m0 0L3.5 23.5a2 2 0 0 0 1.2 3.6h22.6a2 2 0 0 0 1.2-3.6L16 14Z" fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></Svg>}
 export function BottomNav({active}:{active:'inicio'|'catalogo'|'pedidos'|'perfil'}){
- const router=useRouter();return <SafeAreaView edges={['bottom']} style={{backgroundColor:colors.ivory}}><View style={styles.tabBar}>
+ const router=useRouter();return <SafeAreaView edges={['bottom']} style={{backgroundColor:colors.ivory,borderTopLeftRadius:24,borderTopRightRadius:24}}><View style={styles.tabBar}>
   {navs.map(n=><Pressable key={n.key} accessibilityRole="tab" accessibilityState={{selected:active===n.key}} accessibilityLabel={n.label} onPress={()=>router.replace(n.path as any)} style={[styles.tab,{backgroundColor:active===n.key?colors.lilac:colors.transparent}]}>
-   {n.key==='catalogo'?<HangerIcon size={27}/>:<IconView name={(active===n.key?n.activeIcon:n.icon) as Icon} color={colors.purpleDark} size={25}/>}
-   <Text style={{fontFamily:active===n.key?typography.semibold:typography.medium,fontSize:12,color:colors.purpleDark}}>{n.label}</Text>
+   {n.key==='catalogo'?<HangerIcon size={27}/>:<IconView name={(active===n.key?n.activeIcon:n.icon) as Icon} color={active===n.key?colors.purple:colors.purpleDark} size={25}/>}
+   <Text style={{fontFamily:active===n.key?typography.semibold:typography.medium,fontSize:11,color:colors.purpleDark}}>{n.label}</Text>
   </Pressable>)}
  </View></SafeAreaView>
 }
@@ -87,9 +87,10 @@ export function StateView({mode,message,onRetry}:{mode:'loading'|'error'|'empty'
 }
 export const styles=StyleSheet.create({
  header:{width:'100%',position:'relative',justifyContent:'flex-start'},headerInner:{flexDirection:'row',alignItems:'center',justifyContent:'center',gap:8,paddingTop:16},wordmark:{fontFamily:typography.heading,fontSize:28,color:colors.white,letterSpacing:.3},bell:{position:'absolute',right:24,top:20,height:40,width:40,borderRadius:22,alignItems:'center',justifyContent:'center',backgroundColor:'#ffffff1c'},
- tabBar:{paddingHorizontal:16,paddingTop:11,paddingBottom:5,minHeight:78,borderTopLeftRadius:30,borderTopRightRadius:30,backgroundColor:colors.ivory,flexDirection:'row',justifyContent:'space-around',...shadow},tab:{flex:1,borderRadius:24,alignItems:'center',justifyContent:'center',gap:4,minHeight:61},
+ tabBar:{paddingHorizontal:14,paddingTop:9,paddingBottom:5,minHeight:74,borderTopLeftRadius:24,borderTopRightRadius:24,backgroundColor:colors.ivory,flexDirection:'row',justifyContent:'space-around',gap:6,...shadow},tab:{flex:1,borderRadius:19,alignItems:'center',justifyContent:'center',gap:3,minHeight:60},
  panel:{padding:spacing.md,backgroundColor:colors.lilacLight,borderRadius:radius.lg,marginBottom:spacing.sm},back:{height:41,width:41,borderRadius:24,backgroundColor:colors.lilac,alignItems:'center',justifyContent:'center'},
  button:{minHeight:48,borderRadius:radius.pill,paddingHorizontal:15,flexDirection:'row',alignItems:'center',justifyContent:'center',gap:8},
  input:{backgroundColor:colors.lilacLight,borderWidth:1,borderColor:colors.lavender,borderRadius:radius.md,paddingHorizontal:14,paddingVertical:10,fontFamily:typography.regular,fontSize:15,color:colors.text},
  productRow:{flexDirection:'row',gap:13,padding:8,borderRadius:radius.lg,backgroundColor:colors.lilacLight,alignItems:'center',marginVertical:6}
 });
+

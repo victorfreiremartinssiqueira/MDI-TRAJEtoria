@@ -19,3 +19,16 @@ export const pictures:Record<number,any>={
 };
 export const hoodieGallery=[require('../../assets/images/moletom_bege.jpg'), require('../../assets/images/moletom_detalhe.jpg')];
 export function pieceImage(id:number){return pictures[id] || require('../../assets/images/peca_ilustrativa_1.jpg')}
+
+// Resolve only registered references; never create extra gallery entries.
+export function registeredPhoto(reference:string, pieceId:number) {
+ const hoodiePhotos:Record<string,any>={
+  'mock://pecas/moletom-bege/1':require('../../assets/images/moletom_bege.jpg'),
+  'mock://pecas/moletom-bege/2':require('../../assets/images/moletom_detalhe.jpg'),
+  'mock://pecas/moletom-bege/3':require('../../assets/images/moletom_modelo.jpg'),
+ };
+ if(hoodiePhotos[reference])return hoodiePhotos[reference];
+ if(/^https?:\/\//.test(reference))return {uri:reference};
+ if(reference.startsWith('mock://pecas/')&&reference.endsWith('/1'))return pieceImage(pieceId);
+ return null;
+}

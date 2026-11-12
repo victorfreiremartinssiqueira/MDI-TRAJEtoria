@@ -1,24 +1,115 @@
-import React,{useState,useEffect} from 'react';
-import {View,Image,Pressable,Alert} from 'react-native';
-import {useLocalSearchParams,useRouter} from 'expo-router';
-import {useSQLiteContext} from 'expo-sqlite';
-import {AppScreen,PageHeader,Heading,BodyText,SmallHeading,Button,IconView,StatusPill,StateView,Panel} from '../../../src/components/Design';
-import {getPiece,addPieceToSelection} from '../../../src/database/repositories';
-import type {Piece} from '../../../src/types/models';
-import {colors,radius,spacing,typography} from '../../../src/constants/theme';
-import {pieceImage,hoodieGallery} from '../../../src/constants/pictures';
-export default function Detail(){
- const {id}=useLocalSearchParams<{id:string}>(),db=useSQLiteContext(),router=useRouter();const [piece,setPiece]=useState<Piece|null>(null),[loading,setLoading]=useState(true),[imageIndex,setImageIndex]=useState(0);
- useEffect(()=>{setLoading(true);getPiece(db,Number(id)).then(setPiece).finally(()=>setLoading(false))},[id,db]);
- const gallery=Number(id)===1?hoodieGallery:piece?[pieceImage(piece.id)]:[];
- const add=async()=>{if(!piece)return;try{await addPieceToSelection(db,piece.id);Alert.alert('Adicionado ao pedido',`${piece.nome} foi adicionada à sua seleção.`,[{text:'Continuar no catálogo',onPress:()=>router.replace('/(jovem)/catalogo')},{text:'Meu pedido',onPress:()=>router.push('/(jovem)/meu-pedido')}])}catch(e){Alert.alert('Atenção',e instanceof Error?e.message:'Peça indisponível')}};
- return <AppScreen active="catalogo">{loading?<StateView mode="loading"/>:!piece?<StateView mode="empty" message="Peça não encontrada." onRetry={()=>router.back()}/>:<>
- <PageHeader title={piece.nome} subtitle={`${piece.categoria} · ${piece.genero}`}/><View style={{alignSelf:'flex-start',backgroundColor:piece.status==='disponivel'?colors.successBg:colors.warningBg,borderRadius:30,paddingHorizontal:13,paddingVertical:5}}><BodyText style={{fontSize:12,fontFamily:typography.semibold}}>{piece.status==='disponivel'?'✓ Disponível':'Indisponível'}</BodyText></View>
- <View style={{marginTop:14}}><Image source={gallery[imageIndex]} resizeMode="cover" style={{width:'100%',height:255,borderRadius:radius.lg,backgroundColor:colors.lilac}}/><View style={{flexDirection:'row',gap:10,justifyContent:'center',marginTop:11}}>{gallery.map((source,i)=><Pressable key={i} onPress={()=>setImageIndex(i)} accessibilityRole="button" accessibilityLabel={`Fotografia ${i+1}`}><Image source={source} style={{width:56,height:48,borderRadius:10,borderWidth:2,borderColor:i===imageIndex?colors.purple:colors.transparent}}/></Pressable>)}</View></View>
- <Heading size={27} style={{marginTop:17}}>Sobre a peça</Heading><BodyText style={{fontSize:14,marginBottom:15}}>{piece.descricao||'Peça selecionada para o catálogo social do TRAJEtória.'}</BodyText>
- <Panel><View style={{flexDirection:'row',justifyContent:'space-between',gap:7}}>{[{label:'Categoria',val:piece.categoria,icon:'layers-outline'},{label:'Gênero',val:piece.genero,icon:'people-outline'},{label:'Conservação',val:piece.conservacao,icon:'leaf-outline'}].map(x=><View key={x.label} style={{flex:1,alignItems:'center'}}><IconView name={x.icon as any}/><BodyText style={{fontSize:11,color:colors.muted}}>{x.label}</BodyText><BodyText style={{fontFamily:typography.semibold,fontSize:12,textAlign:'center'}}>{x.val}</BodyText></View>)}</View></Panel>
- <Heading size={25} style={{marginTop:10}}>Tamanho da peça</Heading><View style={{flexDirection:'row',gap:10,marginTop:9,marginBottom:8}}><View style={{backgroundColor:colors.purple,borderRadius:40,paddingHorizontal:21,paddingVertical:8}}><BodyText style={{color:colors.white,fontFamily:typography.semibold}}>{piece.tamanho}</BodyText></View></View><BodyText style={{fontSize:12,color:colors.muted}}>Cada roupa é uma peça única. Não há outras variantes de tamanho para este item.</BodyText>
- <Panel style={{marginTop:15}}><SmallHeading style={{fontSize:16}}>Medidas</SmallHeading><BodyText style={{fontSize:12,marginTop:4}}>Medidas detalhadas não informadas para esta peça.</BodyText></Panel>
- <View style={{flexDirection:'row',gap:10,marginTop:9,marginBottom:16}}><View style={{flex:1}}><Button outline title="Voltar" icon="arrow-back" onPress={()=>router.back()}/></View><View style={{flex:1.6}}><Button title="Adicionar ao pedido" icon="bag-add-outline" onPress={add} disabled={piece.status!=='disponivel'}/></View></View>
- </>}</AppScreen>
+﻿import React, { useCallback, useRef, useState } from 'react';
+import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View, type ImageSourcePropType } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useSQLiteContext } from 'expo-sqlite';
+import { LinearGradient } from 'expo-linear-gradient';
+import Svg, { Path } from 'react-native-svg';
+import { BottomNav, BrandMark, Heading, BodyText, Button, IconView, StateView } from '../../../src/components/Design';
+import { getPiece, getPiecePhotos, addPieceToSelection } from '../../../src/database/repositories';
+import type { Piece } from '../../../src/types/models';
+import { colors, radius, spacing, typography } from '../../../src/constants/theme';
+import { registeredPhoto } from '../../../src/constants/pictures';
+
+type Notice = { title: string; message: string; success?: boolean };
+export default function Detail() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const db = useSQLiteContext();
+  const router = useRouter();
+  const [piece, setPiece] = useState<Piece | null>(null);
+  const [gallery, setGallery] = useState<ImageSourcePropType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [imageIndex, setImageIndex] = useState(0);
+  const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState<Notice | null>(null);
+  const [retry, setRetry] = useState(0);
+  const saving = useRef(false);
+  const catalog = () => router.replace('/(jovem)/catalogo');
+  useFocusEffect(useCallback(() => {
+    let active = true;
+    setLoading(true); setError(''); setImageIndex(0);
+    const pieceId = Number(id);
+    if (!Number.isSafeInteger(pieceId) || pieceId < 1) {
+      setPiece(null); setGallery([]); setLoading(false);
+      return;
+    }
+    Promise.all([getPiece(db, pieceId), getPiecePhotos(db, pieceId)]).then(([item, photos]) => {
+      if (!active) return;
+      setPiece(item);
+      setGallery(photos.map(photo => registeredPhoto(photo.referencia, pieceId)).filter((source): source is ImageSourcePropType => source !== null));
+    }).catch(() => { if (active) setError('Não foi possível carregar a peça. Tente novamente.'); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [id, db, retry]));
+  const add = async () => {
+    if (!piece || saving.current || piece.status !== 'disponivel') return;
+    saving.current = true; setBusy(true);
+    try {
+      await addPieceToSelection(db, piece.id);
+      setNotice({ title: 'Peça adicionada', message: `${piece.nome} foi adicionada à sua seleção. A reserva acontecerá somente ao confirmar o pedido.`, success: true });
+    } catch (cause) {
+      setNotice({ title: 'Não foi possível adicionar', message: cause instanceof Error ? cause.message : 'Tente novamente.' });
+      try { const current = await getPiece(db, piece.id); setPiece(current); } catch { /* Keep the last loaded piece and the original error. */ }
+    } finally { saving.current = false; setBusy(false); }
+  };
+  const available = piece?.status === 'disponivel';
+  return <SafeAreaView edges={['top']} style={styles.safe}><View style={styles.page}>
+    <LinearGradient colors={[colors.deep, colors.purpleDark, colors.purple]} style={styles.header}>
+      <View style={styles.brand}><BrandMark size={47} /><Text style={styles.wordmark}>TRAJEtória</Text></View>
+      <Pressable accessibilityRole="button" accessibilityLabel="Notificações" onPress={() => setNotice({ title: 'Notificações', message: 'As notificações serão integradas ao módulo operacional em uma versão futura. Acompanhe seus pedidos pela aba Pedidos.' })} style={styles.bell}><IconView name="notifications-outline" size={21} color={colors.lavender} /></Pressable>
+      <Svg width="100%" height={40} viewBox="0 0 390 40" preserveAspectRatio="none" style={styles.wave} accessible={false}>
+        <Path d="M0 34 C111 -33 204 72 390 5 L390 40 L0 40Z" fill={colors.lavender} opacity=".35" />
+        <Path d="M0 35 C111 -29 204 73 390 12 L390 40 L0 40Z" fill={colors.ivory} />
+        <Path d="M0 35 C111 -29 204 73 390 12" fill="none" stroke={colors.gold} strokeWidth="1.8" />
+      </Svg>
+    </LinearGradient>
+    <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      {loading ? <StateView mode="loading" /> : error ? <StateView mode="error" message={error} onRetry={() => setRetry(value => value + 1)} /> : !piece ? <StateView mode="empty" message="Peça não encontrada. Volte ao catálogo para ver outras opções." onRetry={catalog} /> : <>
+        <View style={styles.pageTitle}>
+          <Pressable accessibilityRole="button" accessibilityLabel="Voltar ao catálogo" onPress={catalog} style={styles.backIcon}><IconView name="arrow-back" size={20} /></Pressable>
+          <View style={styles.flex}><Heading size={25} style={styles.name}>{piece.nome}</Heading><BodyText style={styles.subtitle}>{piece.categoria} · {piece.genero}</BodyText></View>
+          <View style={[styles.status, { backgroundColor: available ? colors.successBg : colors.warningBg }]}><IconView name={available ? 'checkmark' : 'alert-circle-outline'} size={12} color={colors.purpleDark} /><BodyText style={styles.statusText}>{available ? 'Disponível' : 'Indisponível'}</BodyText></View>
+        </View>
+        {gallery.length > 0 ? <>
+          <View style={styles.gallery}>
+            <View style={styles.mainPhoto}><Image source={gallery[imageIndex]} resizeMode="contain" style={styles.fillPhoto} accessibilityLabel={`${piece.nome}, fotografia ${imageIndex + 1} de ${gallery.length}`} /></View>
+            {gallery.length > 1 && <ScrollView style={styles.thumbnails} contentContainerStyle={styles.thumbnailList} showsVerticalScrollIndicator={false}>
+              {gallery.map((source, index) => <Pressable key={index} onPress={() => setImageIndex(index)} accessibilityRole="button" accessibilityLabel={`Selecionar fotografia ${index + 1}`} accessibilityState={{ selected: imageIndex === index }} style={[styles.thumbnail, imageIndex === index && styles.selectedThumbnail]}><Image source={source} resizeMode="contain" style={styles.fillPhoto} /></Pressable>)}
+            </ScrollView>}
+          </View>
+          {gallery.length > 1 && <View style={styles.dots}>{gallery.map((_, index) => <Pressable key={index} accessibilityRole="button" accessibilityLabel={`Fotografia ${index + 1}`} accessibilityState={{ selected: imageIndex === index }} onPress={() => setImageIndex(index)} style={styles.dotTarget}><View style={[styles.dot, index === imageIndex && styles.activeDot]} /></Pressable>)}</View>}
+        </> : <View style={styles.noPhoto}><IconView name="image-outline" size={35} /><BodyText>Fotografia não disponível.</BodyText></View>}
+        <Heading size={21} style={styles.sectionTitle}>Sobre a peça</Heading>
+        <BodyText style={styles.description}>{piece.descricao || 'Descrição não informada para esta peça.'}</BodyText>
+        <View style={styles.attributes}>
+          {([{ label: 'Categoria', value: piece.categoria, icon: 'layers-outline' }, { label: 'Gênero', value: piece.genero, icon: 'people-outline' }, { label: 'Conservação', value: piece.conservacao, icon: 'leaf-outline' }] as const).map((item, index) => <View key={item.label} style={[styles.attribute, index > 0 && styles.attributeBorder]}><IconView name={item.icon} size={22} /><View style={styles.flex}><BodyText style={styles.attributeLabel}>{item.label}</BodyText><BodyText style={styles.attributeValue}>{item.value}</BodyText></View></View>)}
+        </View>
+        <Heading size={20} style={styles.sectionTitle}>Tamanho disponível</Heading>
+        <View style={styles.sizeRow}><LinearGradient colors={[colors.purple, colors.purpleDark]} style={styles.sizeBadge}><BodyText style={styles.sizeText}>{piece.tamanho}</BodyText></LinearGradient><BodyText style={styles.unique}>Peça única no tamanho cadastrado.</BodyText></View>
+        <View style={styles.measurements}><View style={styles.measureTitle}><IconView name="resize-outline" size={21} /><BodyText style={styles.measureLabel}>Medidas ({piece.tamanho})</BodyText></View><BodyText style={styles.measureText}>Medidas detalhadas não informadas para esta peça.</BodyText></View>
+        {!available && <BodyText accessibilityRole="alert" style={styles.unavailable}>Esta peça não está disponível. Volte ao catálogo para escolher outras opções.</BodyText>}
+        <View style={styles.actions}><Pressable accessibilityRole="button" onPress={catalog} style={styles.backButton}><IconView name="arrow-back" size={18} /><Text style={styles.backLabel}>Voltar</Text></Pressable><Pressable accessibilityRole="button" accessibilityLabel="Adicionar ao pedido" accessibilityState={{ disabled: !available || busy, busy }} disabled={!available || busy} onPress={() => void add()} style={styles.addButton}><LinearGradient colors={[colors.purple, colors.purpleDark]} style={[styles.addInner, (!available || busy) && styles.disabled]}>{busy ? <ActivityIndicator color={colors.white} /> : <><IconView name="bag-add-outline" size={22} color={colors.white} /><Text style={styles.addLabel}>Adicionar ao pedido</Text></>}</LinearGradient></Pressable></View>
+      </>}
+    </ScrollView>
+    <BottomNav active="catalogo" />
+  </View>
+  <Modal visible={notice !== null} transparent animationType="fade" onRequestClose={() => setNotice(null)}><View style={styles.overlay}><View accessibilityViewIsModal style={styles.dialog}><Heading size={30}>{notice?.title}</Heading><BodyText style={styles.notice}>{notice?.message}</BodyText>
+    {notice?.success && <Button title="Ver meu pedido" onPress={() => { setNotice(null); router.push('/(jovem)/meu-pedido'); }} style={{ marginBottom: spacing.sm }} />}
+    {notice?.success || (piece && !available) ? <Button title="Continuar no catálogo" onPress={() => { setNotice(null); catalog(); }} style={{ marginBottom: spacing.sm }} /> : null}
+    <Button title="Fechar" outline onPress={() => setNotice(null)} />
+  </View></View></Modal>
+  </SafeAreaView>;
 }
+
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: colors.deep }, page: { flex: 1, width: '100%', maxWidth: 520, alignSelf: 'center', backgroundColor: colors.ivory }, flex: { flex: 1 }, scroll: { flex: 1 },
+  header: { height: 86 }, brand: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7, paddingTop: 8, paddingRight: 26 }, wordmark: { fontFamily: typography.headingRegular, fontSize: 29, color: colors.ivory }, bell: { position: 'absolute', right: 23, top: 13, width: 38, height: 38, borderRadius: radius.pill, backgroundColor: colors.lavender + '22', alignItems: 'center', justifyContent: 'center' }, wave: { position: 'absolute', bottom: -1 },
+  content: { paddingHorizontal: spacing.lg, paddingTop: 4, paddingBottom: spacing.md }, pageTitle: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: spacing.sm }, backIcon: { width: 34, height: 40, borderRadius: radius.pill, backgroundColor: colors.lilacLight, alignItems: 'center', justifyContent: 'center' }, name: { fontFamily: typography.headingRegular }, subtitle: { fontSize: 12, lineHeight: 16 },
+  status: { flexDirection: 'row', alignItems: 'center', gap: 3, borderRadius: radius.pill, paddingHorizontal: 6, paddingVertical: 3 }, statusText: { fontSize: 9, lineHeight: 13, color: colors.purpleDark },
+  gallery: { flexDirection: 'row', gap: 8, height: 188 }, mainPhoto: { flex: 1, borderRadius: radius.md, overflow: 'hidden', backgroundColor: colors.lilacLight }, fillPhoto: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }, thumbnails: { flexGrow: 0, flexShrink: 0, width: '22%' }, thumbnailList: { gap: 5 }, thumbnail: { width: '100%', aspectRatio: 1.25, borderRadius: radius.sm, borderWidth: 1.5, borderColor: colors.transparent, overflow: 'hidden', backgroundColor: colors.lilacLight }, selectedThumbnail: { borderColor: colors.gold }, dots: { flexDirection: 'row', justifyContent: 'center', minHeight: 20 }, dotTarget: { width: 24, height: 24, alignItems: 'center', justifyContent: 'center' }, dot: { width: 6, height: 6, borderRadius: radius.pill, backgroundColor: colors.line }, activeDot: { backgroundColor: colors.purple }, noPhoto: { minHeight: 140, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.lilacLight, borderRadius: radius.md },
+  sectionTitle: { marginTop: 7, marginBottom: 3 }, description: { fontSize: 13, lineHeight: 17, marginBottom: 7 }, attributes: { flexDirection: 'row', backgroundColor: colors.lilacLight, borderRadius: radius.md, paddingVertical: 9 }, attribute: { flex: 1, flexDirection: 'row', gap: 5, alignItems: 'center', paddingHorizontal: 7 }, attributeBorder: { borderLeftWidth: 1, borderLeftColor: colors.line }, attributeLabel: { fontSize: 9, lineHeight: 13 }, attributeValue: { fontSize: 11, lineHeight: 14, fontFamily: typography.semibold },
+  sizeRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginVertical: 5 }, sizeBadge: { minWidth: 62, alignItems: 'center', paddingVertical: 5, paddingHorizontal: 15, borderRadius: radius.pill }, sizeText: { fontSize: 13, fontFamily: typography.semibold, color: colors.white }, unique: { flex: 1, fontSize: 11, lineHeight: 15, color: colors.muted }, measurements: { backgroundColor: colors.lilacLight, borderRadius: radius.md, padding: spacing.sm, marginTop: 7 }, measureTitle: { flexDirection: 'row', alignItems: 'center', gap: 7 }, measureLabel: { fontFamily: typography.semibold, fontSize: 12, color: colors.purpleDark }, measureText: { fontSize: 12, lineHeight: 16, paddingLeft: 28 },
+  actions: { flexDirection: 'row', gap: 10, marginTop: spacing.lg }, backButton: { flex: 1, minHeight: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 5, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.purple }, backLabel: { fontFamily: typography.semibold, fontSize: 13, color: colors.purpleDark }, addButton: { flex: 1.75, borderRadius: radius.pill, overflow: 'hidden' }, addInner: { flex: 1, minHeight: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7, paddingHorizontal: 8, paddingVertical: 7, borderRadius: radius.pill }, addLabel: { flexShrink: 1, textAlign: 'center', fontFamily: typography.medium, fontSize: 13, color: colors.white }, disabled: { opacity: .5 }, unavailable: { fontSize: 13, color: colors.danger, marginTop: spacing.sm },
+  overlay: { flex: 1, padding: spacing.xl, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.deep + '99' }, dialog: { width: '100%', maxWidth: 420, padding: spacing.xl, borderRadius: radius.lg, backgroundColor: colors.ivory }, notice: { marginVertical: spacing.lg },
+});
