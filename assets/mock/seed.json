@@ -1,0 +1,474 @@
+{
+  "usuarios": [
+    {
+      "id": 1,
+      "identificacao": "lucas.demo",
+      "senha_hash": "c4b2ecf56f13eb04e55af8f45f0cba15a59606943bf25ea89a35c1df094ffa93",
+      "perfil": "jovem",
+      "situacao": "ativo"
+    }
+  ],
+  "ongs": [
+    {
+      "id": 1,
+      "nome": "Instituto Caminhos - organização fictícia",
+      "contato": "contato@exemplo.invalid",
+      "situacao": "ativa"
+    }
+  ],
+  "jovens": [
+    {
+      "id": 1,
+      "usuario_id": 1,
+      "ong_id": 1,
+      "nome": "Lucas Almeida",
+      "tamanho_referencia": "M",
+      "tamanhos_json": "[\"M\", \"G\", \"42\"]",
+      "genero": null,
+      "telefone": "(11) 90000-0000",
+      "cep": "00000-000",
+      "logradouro": "Rua Exemplo",
+      "numero": "100",
+      "complemento": "Apto 12",
+      "bairro": "Bairro Fictício",
+      "cidade": "São Paulo",
+      "uf": "SP",
+      "situacao": "validado",
+      "menor_de_idade": 0
+    }
+  ],
+  "pecas": [
+    {
+      "id": 1,
+      "nome": "Moletom Canguru",
+      "categoria": "Moletom",
+      "genero": "Unissex",
+      "tamanho": "M",
+      "conservacao": "Muito bom",
+      "descricao": "Moletom bege com capuz e bolso frontal.",
+      "status": "disponivel",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    },
+    {
+      "id": 2,
+      "nome": "Camiseta Básica",
+      "categoria": "Camiseta",
+      "genero": "Unissex",
+      "tamanho": "G",
+      "conservacao": "Bom",
+      "descricao": "Camiseta roxa de algodão.",
+      "status": "disponivel",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    },
+    {
+      "id": 3,
+      "nome": "Calça Cargo",
+      "categoria": "Calça",
+      "genero": "Masculino",
+      "tamanho": "42",
+      "conservacao": "Muito bom",
+      "descricao": "Calça cargo escura com bolsos.",
+      "status": "disponivel",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    },
+    {
+      "id": 4,
+      "nome": "Jaqueta Jeans",
+      "categoria": "Jaqueta",
+      "genero": "Unissex",
+      "tamanho": "M",
+      "conservacao": "Bom",
+      "descricao": "Jaqueta jeans azul.",
+      "status": "disponivel",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    },
+    {
+      "id": 5,
+      "nome": "Camiseta Estampada",
+      "categoria": "Camiseta",
+      "genero": "Feminino",
+      "tamanho": "M",
+      "conservacao": "Bom",
+      "descricao": "Camiseta clara com estampa.",
+      "status": "disponivel",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    },
+    {
+      "id": 6,
+      "nome": "Vestido Floral",
+      "categoria": "Vestido",
+      "genero": "Feminino",
+      "tamanho": "M",
+      "conservacao": "Muito bom",
+      "descricao": "Vestido estampado leve.",
+      "status": "disponivel",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    },
+    {
+      "id": 7,
+      "nome": "Calça Jeans",
+      "categoria": "Calça",
+      "genero": "Feminino",
+      "tamanho": "40",
+      "conservacao": "Bom",
+      "descricao": "Calça jeans azul.",
+      "status": "disponivel",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    },
+    {
+      "id": 8,
+      "nome": "Camisa Social",
+      "categoria": "Camisa",
+      "genero": "Masculino",
+      "tamanho": "M",
+      "conservacao": "Muito bom",
+      "descricao": "Camisa social clara.",
+      "status": "disponivel",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    },
+    {
+      "id": 9,
+      "nome": "Moletom Azul",
+      "categoria": "Moletom",
+      "genero": "Unissex",
+      "tamanho": "M",
+      "conservacao": "Bom",
+      "descricao": "Moletom azul de demonstração.",
+      "status": "reservada",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    },
+    {
+      "id": 10,
+      "nome": "Calça Esportiva",
+      "categoria": "Calça",
+      "genero": "Masculino",
+      "tamanho": "M",
+      "conservacao": "Bom",
+      "descricao": "Calça esportiva de demonstração.",
+      "status": "reservada",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    },
+    {
+      "id": 11,
+      "nome": "Jaqueta Corta-vento",
+      "categoria": "Jaqueta",
+      "genero": "Unissex",
+      "tamanho": "G",
+      "conservacao": "Bom",
+      "descricao": "Jaqueta leve de demonstração.",
+      "status": "reservada",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    },
+    {
+      "id": 12,
+      "nome": "Camiseta Preta",
+      "categoria": "Camiseta",
+      "genero": "Unissex",
+      "tamanho": "M",
+      "conservacao": "Muito bom",
+      "descricao": "Camiseta preta de demonstração.",
+      "status": "reservada",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    },
+    {
+      "id": 13,
+      "nome": "Blusa de Tricô",
+      "categoria": "Blusa",
+      "genero": "Feminino",
+      "tamanho": "P",
+      "conservacao": "Muito bom",
+      "descricao": "Blusa de tricô de demonstração entregue.",
+      "status": "destinada",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    },
+    {
+      "id": 14,
+      "nome": "Saia Midi",
+      "categoria": "Saia",
+      "genero": "Feminino",
+      "tamanho": "M",
+      "conservacao": "Bom",
+      "descricao": "Saia midi lisa.",
+      "status": "disponivel",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    },
+    {
+      "id": 15,
+      "nome": "Bermuda Jeans",
+      "categoria": "Bermuda",
+      "genero": "Masculino",
+      "tamanho": "42",
+      "conservacao": "Bom",
+      "descricao": "Bermuda jeans de uso casual.",
+      "status": "disponivel",
+      "data_entrada": "2026-10-28T09:00:00-03:00"
+    }
+  ],
+  "peca_fotos": [
+    {
+      "id": 1,
+      "peca_id": 1,
+      "referencia": "mock://pecas/moletom-bege/1",
+      "ordem": 0
+    },
+    {
+      "id": 2,
+      "peca_id": 1,
+      "referencia": "mock://pecas/moletom-bege/2",
+      "ordem": 1
+    },
+    {
+      "id": 3,
+      "peca_id": 1,
+      "referencia": "mock://pecas/moletom-bege/3",
+      "ordem": 2
+    },
+    {
+      "id": 4,
+      "peca_id": 2,
+      "referencia": "mock://pecas/camiseta-roxa/1",
+      "ordem": 0
+    },
+    {
+      "id": 5,
+      "peca_id": 3,
+      "referencia": "mock://pecas/calca-cargo/1",
+      "ordem": 0
+    },
+    {
+      "id": 6,
+      "peca_id": 4,
+      "referencia": "mock://pecas/jaqueta-jeans/1",
+      "ordem": 0
+    },
+    {
+      "id": 7,
+      "peca_id": 5,
+      "referencia": "mock://pecas/camiseta-estampada/1",
+      "ordem": 0
+    },
+    {
+      "id": 8,
+      "peca_id": 6,
+      "referencia": "mock://pecas/vestido-floral/1",
+      "ordem": 0
+    },
+    {
+      "id": 9,
+      "peca_id": 7,
+      "referencia": "mock://pecas/calca-jeans/1",
+      "ordem": 0
+    },
+    {
+      "id": 10,
+      "peca_id": 8,
+      "referencia": "mock://pecas/camisa-social/1",
+      "ordem": 0
+    },
+    {
+      "id": 11,
+      "peca_id": 9,
+      "referencia": "mock://pecas/moletom-azul/1",
+      "ordem": 0
+    },
+    {
+      "id": 12,
+      "peca_id": 10,
+      "referencia": "mock://pecas/calca-esportiva/1",
+      "ordem": 0
+    },
+    {
+      "id": 13,
+      "peca_id": 11,
+      "referencia": "mock://pecas/jaqueta-corta-vento/1",
+      "ordem": 0
+    },
+    {
+      "id": 14,
+      "peca_id": 12,
+      "referencia": "mock://pecas/camiseta-preta/1",
+      "ordem": 0
+    },
+    {
+      "id": 15,
+      "peca_id": 13,
+      "referencia": "mock://pecas/blusa-trico/1",
+      "ordem": 0
+    },
+    {
+      "id": 16,
+      "peca_id": 14,
+      "referencia": "mock://pecas/saia-midi/1",
+      "ordem": 0
+    },
+    {
+      "id": 17,
+      "peca_id": 15,
+      "referencia": "mock://pecas/bermuda-jeans/1",
+      "ordem": 0
+    }
+  ],
+  "consentimentos": [],
+  "selecao_itens": [],
+  "pedidos": [
+    {
+      "id": 1,
+      "jovem_id": 1,
+      "data_pedido": "2026-11-10T11:30:00-03:00",
+      "status": "em_separacao",
+      "endereco_cep": "00000-000",
+      "endereco_logradouro": "Rua Exemplo",
+      "endereco_numero": "100",
+      "endereco_complemento": "Apto 12",
+      "endereco_bairro": "Bairro Fictício",
+      "endereco_cidade": "São Paulo",
+      "endereco_uf": "SP",
+      "contato_entrega": "(11) 90000-0000",
+      "data_despacho_prevista": "2026-11-12",
+      "data_entrega_prevista": null,
+      "data_entrega_real": null
+    },
+    {
+      "id": 2,
+      "jovem_id": 1,
+      "data_pedido": "2026-11-03T10:00:00-03:00",
+      "status": "despachado",
+      "endereco_cep": "00000-000",
+      "endereco_logradouro": "Rua Exemplo",
+      "endereco_numero": "100",
+      "endereco_complemento": "Apto 12",
+      "endereco_bairro": "Bairro Fictício",
+      "endereco_cidade": "São Paulo",
+      "endereco_uf": "SP",
+      "contato_entrega": "(11) 90000-0000",
+      "data_despacho_prevista": "2026-11-05",
+      "data_entrega_prevista": null,
+      "data_entrega_real": null
+    },
+    {
+      "id": 3,
+      "jovem_id": 1,
+      "data_pedido": "2026-10-27T09:00:00-03:00",
+      "status": "entregue",
+      "endereco_cep": "00000-000",
+      "endereco_logradouro": "Rua Exemplo",
+      "endereco_numero": "100",
+      "endereco_complemento": "Apto 12",
+      "endereco_bairro": "Bairro Fictício",
+      "endereco_cidade": "São Paulo",
+      "endereco_uf": "SP",
+      "contato_entrega": "(11) 90000-0000",
+      "data_despacho_prevista": "2026-10-29",
+      "data_entrega_prevista": null,
+      "data_entrega_real": "2026-10-31"
+    }
+  ],
+  "pedido_itens": [
+    {
+      "id": 1,
+      "pedido_id": 1,
+      "peca_id": 9,
+      "situacao": "separado"
+    },
+    {
+      "id": 2,
+      "pedido_id": 1,
+      "peca_id": 10,
+      "situacao": "separado"
+    },
+    {
+      "id": 3,
+      "pedido_id": 2,
+      "peca_id": 11,
+      "situacao": "despachado"
+    },
+    {
+      "id": 4,
+      "pedido_id": 2,
+      "peca_id": 12,
+      "situacao": "despachado"
+    },
+    {
+      "id": 5,
+      "pedido_id": 3,
+      "peca_id": 13,
+      "situacao": "entregue"
+    }
+  ],
+  "historico_pedidos": [
+    {
+      "id": 1,
+      "pedido_id": 1,
+      "status": "solicitado",
+      "atualizado_em": "2026-11-10T11:30:00-03:00",
+      "responsavel_perfil": "jovem",
+      "observacao": "Registro fictício para demonstração"
+    },
+    {
+      "id": 2,
+      "pedido_id": 1,
+      "status": "em_separacao",
+      "atualizado_em": "2026-11-11T09:00:00-03:00",
+      "responsavel_perfil": "operacao",
+      "observacao": "Registro fictício para demonstração"
+    },
+    {
+      "id": 3,
+      "pedido_id": 2,
+      "status": "solicitado",
+      "atualizado_em": "2026-11-03T10:00:00-03:00",
+      "responsavel_perfil": "jovem",
+      "observacao": "Registro fictício para demonstração"
+    },
+    {
+      "id": 4,
+      "pedido_id": 2,
+      "status": "em_separacao",
+      "atualizado_em": "2026-11-04T08:00:00-03:00",
+      "responsavel_perfil": "operacao",
+      "observacao": "Registro fictício para demonstração"
+    },
+    {
+      "id": 5,
+      "pedido_id": 2,
+      "status": "despachado",
+      "atualizado_em": "2026-11-05T13:00:00-03:00",
+      "responsavel_perfil": "operacao",
+      "observacao": "Registro fictício para demonstração"
+    },
+    {
+      "id": 6,
+      "pedido_id": 3,
+      "status": "solicitado",
+      "atualizado_em": "2026-10-27T09:00:00-03:00",
+      "responsavel_perfil": "jovem",
+      "observacao": "Registro fictício para demonstração"
+    },
+    {
+      "id": 7,
+      "pedido_id": 3,
+      "status": "em_separacao",
+      "atualizado_em": "2026-10-28T13:00:00-03:00",
+      "responsavel_perfil": "operacao",
+      "observacao": "Registro fictício para demonstração"
+    },
+    {
+      "id": 8,
+      "pedido_id": 3,
+      "status": "despachado",
+      "atualizado_em": "2026-10-29T14:00:00-03:00",
+      "responsavel_perfil": "operacao",
+      "observacao": "Registro fictício para demonstração"
+    },
+    {
+      "id": 9,
+      "pedido_id": 3,
+      "status": "entregue",
+      "atualizado_em": "2026-10-31T11:00:00-03:00",
+      "responsavel_perfil": "operacao",
+      "observacao": "Registro fictício para demonstração"
+    }
+  ],
+  "feedbacks": [],
+  "feedback_itens": []
+}

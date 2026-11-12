@@ -1,0 +1,20 @@
+{
+  "projeto": "TRAJEtória - Mobile Development - Jornada do Jovem",
+  "version": "1.0.0",
+  "sdk": "Expo 57",
+  "telas": [
+    "T01 Acesso",
+    "T02 Consentimento",
+    "T03 Início",
+    "T04 Catálogo",
+    "T05 Detalhe",
+    "T06 Meu pedido",
+    "T07 Entrega",
+    "T08 Acompanhamento",
+    "T09 Feedback",
+    "TP01 Perfil"
+  ],
+  "database": "SQLite - 12 tabelas",
+  "tests": "SQLite e sintaxe TypeScript verificados localmente; Expo Go não executado neste ambiente",
+  "instructions": "README.md"
+}

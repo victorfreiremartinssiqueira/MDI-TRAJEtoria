@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "TRAJEtória",
+    "slug": "trajetoria-mobile",
+    "scheme": "trajetoria",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "icon": "./assets/images/app-icon.png",
+    "backgroundColor": "#FBF8F4",
+    "ios": { "supportsTablet": true },
+    "android": { "adaptiveIcon": { "foregroundImage": "./assets/images/app-icon.png", "backgroundColor": "#2E1B3D" }, "edgeToEdgeEnabled": true },
+    "plugins": ["expo-router", "expo-sqlite", "expo-font"],
+    "experiments": { "typedRoutes": false }
+  }
+}
