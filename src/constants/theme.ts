@@ -11,5 +11,5 @@ export const typography = {
   heading: 'CormorantGaramond_600SemiBold', headingRegular: 'CormorantGaramond_500Medium',
   regular: 'Jost_400Regular', medium: 'Jost_500Medium', semibold: 'Jost_600SemiBold', bold: 'Jost_700Bold',
 } as const;
-export const config = { maxItemsPerOrder: 5, dispatchDay: 4, consentVersion: '1.0', demoYoungId: 1, demoUser: 'lucas.demo', demoPassword: 'trajetoria123' } as const;
+export const config = { maxItemsPerOrder: 5, dispatchDay: 4, dispatchThursdayCutoffHour: null as number | null, consentVersion: '1.0', demoYoungId: 1, demoUser: 'lucas.demo', demoPassword: 'trajetoria123' } as const;
 export const shadow = { shadowColor: colors.deep, shadowOpacity: .08, shadowOffset: { width: 0, height: 6 }, shadowRadius: 14, elevation: 3 };

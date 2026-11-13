@@ -26,6 +26,9 @@ export async function hasConsent(db:SQLiteDatabase) {
 export async function saveConsent(db:SQLiteDatabase){
  await db.runAsync('INSERT INTO consentimentos(jovem_id,versao_termo,aceito,aceito_em) VALUES (?,?,1,?)',JOVEM,config.consentVersion,now());
 }
+export async function getLatestConsent(db:SQLiteDatabase){
+ return db.getFirstAsync<{versao_termo:string;aceito_em:string}>('SELECT versao_termo,aceito_em FROM consentimentos WHERE jovem_id=? AND aceito=1 ORDER BY id DESC LIMIT 1',JOVEM);
+}
 export async function getPieces(db:SQLiteDatabase):Promise<Piece[]> {
   return await db.getAllAsync<Piece>(`SELECT p.*,(SELECT referencia FROM peca_fotos WHERE peca_id=p.id ORDER BY ordem LIMIT 1) foto FROM pecas p WHERE p.status='disponivel' ORDER BY p.id`);
 }
@@ -88,6 +91,8 @@ export async function confirmOrder(db:SQLiteDatabase,address:Address):Promise<nu
  return createdId;
 }
 export async function saveFeedback(db:SQLiteDatabase,orderId:number,answers:FeedbackAnswers,participated:boolean,comment:string):Promise<void>{
+ if(typeof participated!=='boolean')throw new Error('Informe se participou de uma entrevista de emprego.');
+ if(comment.length>300)throw new Error('O comentário deve ter até 300 caracteres.');
  await db.withTransactionAsync(async()=>{
   const order=await getOrder(db,orderId);
   if(!order||order.status!=='entregue')throw new Error('O feedback só é permitido para pedidos entregues.');

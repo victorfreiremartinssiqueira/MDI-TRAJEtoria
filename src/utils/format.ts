@@ -13,11 +13,11 @@ export function datePT(value?:string|null) {
 export function dateShort(value?:string|null) {
  if(!value)return 'A definir';const parts=value.slice(0,10).split('-');return `${parts[2]}/${parts[1]}/${parts[0]}`;
 }
-export function nextDispatch(from=new Date()):string {
+export function nextDispatch(from=new Date(),cutoffHour:number|null=config.dispatchThursdayCutoffHour):string {
  const d=new Date(from.getFullYear(),from.getMonth(),from.getDate());
  let days=(config.dispatchDay-d.getDay()+7)%7;
- // Sem horário de corte confirmado: pedidos registrados na quinta entram no ciclo seguinte.
- if (days===0) days=7;
+ // Sem corte definido (null), quinta entra no ciclo seguinte. Corte usa a hora local do dispositivo.
+ if (days===0 && (cutoffHour===null || from.getHours()>=cutoffHour)) days=7;
  d.setDate(d.getDate()+days);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 export function initials(name:string){return name.split(' ').slice(0,2).map(x=>x[0]).join('').toUpperCase()}
