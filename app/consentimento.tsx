@@ -2,7 +2,7 @@
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter, Redirect } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useAuthDatabase } from '../src/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Circle, Ellipse, G, Path } from 'react-native-svg';
 import { colors, config, radius, spacing, typography } from '../src/constants/theme';
@@ -52,7 +52,7 @@ function ConsentFooter() {
 export default function Consent() {
   const { authenticated, consentGranted, logout, grantConsent } = useAuth();
   const router = useRouter();
-  const db = useSQLiteContext();
+  const db = useAuthDatabase();
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const [checked, setChecked] = useState(false);
@@ -190,3 +190,4 @@ const styles = StyleSheet.create({
   overlay: { flex: 1, backgroundColor: colors.deep + '99', justifyContent: 'center', alignItems: 'center', padding: spacing.xl },
   dialog: { width: '100%', maxWidth: 420, padding: spacing.xl, borderRadius: radius.lg, backgroundColor: colors.ivory },
 });
+

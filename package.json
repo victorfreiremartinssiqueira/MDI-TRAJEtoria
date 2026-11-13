@@ -9,7 +9,8 @@
     "ios": "expo start --ios",
     "check": "tsc --noEmit",
     "doctor": "expo-doctor",
-    "test:db": "python tests/test_schema.py"
+    "test:db": "python tests/test_schema.py",
+    "test:repositories": "node tests/test_repositories.cjs"
   },
   "dependencies": {
     "@expo-google-fonts/cormorant-garamond": "^0.4.1",

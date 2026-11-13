@@ -2,7 +2,7 @@
 import { Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useAuthDatabase } from '../../src/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path } from 'react-native-svg';
 import { BottomNav, BrandMark, Heading, BodyText, Button, IconView, StateView } from '../../src/components/Design';
@@ -15,7 +15,7 @@ import { colors, typography, radius, spacing } from '../../src/constants/theme';
 
 export default function Tracking() {
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const db = useSQLiteContext();
+  const db = useAuthDatabase();
   const router = useRouter();
   const [current, setCurrent] = useState<Order | null>(null);
   const [items, setItems] = useState<OrderPiece[]>([]);
@@ -87,3 +87,4 @@ const styles = StyleSheet.create({
   contact: { alignSelf: 'center', maxWidth: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 12, borderWidth: 1, borderColor: colors.purple, borderRadius: radius.pill, paddingHorizontal: spacing.xl, paddingVertical: 6, minHeight: 44, marginTop: spacing.md }, contactLabel: { flexShrink: 1, textAlign: 'center', fontFamily: typography.semibold, color: colors.purpleDark, fontSize: 14 }, feedback: { marginTop: spacing.sm }, historyToggle: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7, minHeight: 44, marginTop: 5 }, historyLabel: { fontSize: 11, color: colors.muted }, events: { padding: spacing.sm, gap: 9, borderRadius: radius.md, backgroundColor: colors.lilacLight }, event: { flexDirection: 'row', gap: 8 }, eventText: { flex: 1, fontSize: 12, lineHeight: 17 }, allOrders: { alignSelf: 'center', padding: 7 }, allOrdersLabel: { fontSize: 12, color: colors.purpleDark, textDecorationLine: 'underline' },
   overlay: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: spacing.xl, backgroundColor: colors.deep + '99' }, dialog: { width: '100%', maxWidth: 420, padding: spacing.xl, backgroundColor: colors.ivory, borderRadius: radius.lg }, dialogText: { marginVertical: spacing.lg },
 });
+

@@ -2,7 +2,7 @@
 import { ActivityIndicator, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useAuthDatabase } from '../../src/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path } from 'react-native-svg';
 import { useAuth } from '../../src/context/AuthContext';
@@ -29,7 +29,7 @@ function missingAddress(address: Address) {
 
 export default function Delivery() {
   const router = useRouter();
-  const db = useSQLiteContext();
+  const db = useAuthDatabase();
   const { refreshProfile } = useAuth();
   const [address, setAddress] = useState<Address>(emptyAddress);
   const [draft, setDraft] = useState<Address>(emptyAddress);
@@ -45,13 +45,17 @@ export default function Delivery() {
   const [dispatch, setDispatch] = useState(() => nextDispatch());
   const submitting = useRef(false);
   const sent = useRef(false);
+  const addressLoaded = useRef(false);
   const review = () => router.replace('/(jovem)/meu-pedido');
   useFocusEffect(useCallback(() => {
     let active = true;
     setLoading(true); setLoadError(false); setError(''); setDispatch(nextDispatch());
     Promise.all([getYoung(db), getSelection(db)]).then(([young, items]) => {
       if (!active) return;
-      setAddress({ cep: young.cep || '', logradouro: young.logradouro || '', numero: young.numero || '', complemento: young.complemento || '', bairro: young.bairro || '', cidade: young.cidade || '', uf: young.uf || '', contato: young.telefone || '' });
+      if (!addressLoaded.current) {
+        setAddress({ cep: young.cep || '', logradouro: young.logradouro || '', numero: young.numero || '', complemento: young.complemento || '', bairro: young.bairro || '', cidade: young.cidade || '', uf: young.uf || '', contato: young.telefone || '' });
+        addressLoaded.current = true;
+      }
       setQty(items.length);
     }).catch(() => { if (active) setLoadError(true); }).finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
@@ -126,3 +130,4 @@ const styles = StyleSheet.create({
   actions: { flexDirection: 'row', gap: 12, marginTop: spacing.sm }, backButton: { flex: 1, minHeight: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 9, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.purple, paddingHorizontal: 12, paddingVertical: 8 }, backLabel: { fontFamily: typography.semibold, color: colors.purpleDark, fontSize: 15 }, sendButton: { flex: 1.35, borderRadius: radius.pill, shadowColor: colors.purpleDark, shadowOffset: { width: 0, height: 4 }, shadowOpacity: .16, shadowRadius: 7, elevation: 3 }, sendInner: { flex: 1, minHeight: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8 }, sendLabel: { flexShrink: 1, textAlign: 'center', fontFamily: typography.medium, color: colors.white, fontSize: 15 }, disabled: { opacity: .5 },
   editorSafe: { flex: 1, backgroundColor: colors.ivory }, editorContent: { width: '100%', maxWidth: 520, alignSelf: 'center', padding: spacing.xl }, editorNote: { fontSize: 14, lineHeight: 20, marginVertical: spacing.lg }, errorBox: { padding: spacing.sm, backgroundColor: colors.lilacLight, borderRadius: radius.md }, error: { color: colors.danger, fontSize: 13 }, reviewLink: { paddingVertical: spacing.sm }, reviewText: { color: colors.purpleDark, textDecorationLine: 'underline', fontSize: 13 }, overlay: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: spacing.xl, backgroundColor: colors.deep + '99' }, dialog: { width: '100%', maxWidth: 420, backgroundColor: colors.ivory, padding: spacing.xl, borderRadius: radius.lg },
 });
+

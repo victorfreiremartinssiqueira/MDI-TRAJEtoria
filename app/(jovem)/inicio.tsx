@@ -1,7 +1,7 @@
 ﻿import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useAuthDatabase } from '../../src/context/AuthContext';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path } from 'react-native-svg';
@@ -25,7 +25,7 @@ function Chevron({ light = false }: { light?: boolean }) {
 }
 
 export default function Home() {
-  const db = useSQLiteContext();
+  const db = useAuthDatabase();
   const router = useRouter();
   const { young } = useAuth();
   const { height } = useWindowDimensions();
@@ -157,4 +157,5 @@ const styles = StyleSheet.create({
   overlay: { flex: 1, backgroundColor: colors.deep + '99', justifyContent: 'center', padding: spacing.xl },
   dialog: { width: '100%', maxWidth: 420, alignSelf: 'center', padding: spacing.xl, backgroundColor: colors.ivory, borderRadius: radius.lg },
 });
+
 

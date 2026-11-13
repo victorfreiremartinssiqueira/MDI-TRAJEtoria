@@ -2,7 +2,7 @@
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useAuthDatabase } from '../../src/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path } from 'react-native-svg';
 import { colors, config, radius, typography, spacing } from '../../src/constants/theme';
@@ -13,7 +13,7 @@ import type { Piece } from '../../src/types/models';
 
 type Notice = { title: string; message: string };
 export default function Basket() {
-  const db = useSQLiteContext();
+  const db = useAuthDatabase();
   const router = useRouter();
   const [items, setItems] = useState<Piece[]>([]);
   const [loading, setLoading] = useState(true);
@@ -107,3 +107,4 @@ const styles = StyleSheet.create({
   actions: { flexDirection: 'row', gap: 12, marginTop: spacing.lg }, backButton: { flex: 1, minHeight: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.purple, paddingHorizontal: 12, paddingVertical: 8 }, backLabel: { flex: 1, fontFamily: typography.semibold, color: colors.purpleDark, fontSize: 14, textAlign: 'center', lineHeight: 18 }, continueButton: { flex: 1.35, borderRadius: radius.pill, shadowColor: colors.purpleDark, shadowOffset: { width: 0, height: 4 }, shadowOpacity: .16, shadowRadius: 7, elevation: 3 }, continueInner: { flex: 1, minHeight: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, borderRadius: radius.pill, paddingHorizontal: 14, paddingVertical: 8 }, continueLabel: { flex: 1, textAlign: 'center', fontFamily: typography.medium, color: colors.white, fontSize: 14, lineHeight: 18 }, disabled: { opacity: .5 },
   empty: { alignItems: 'center', backgroundColor: colors.lilacLight, borderRadius: radius.lg, padding: spacing.xl }, emptyTitle: { marginTop: spacing.md, textAlign: 'center' }, emptyText: { fontSize: 14, textAlign: 'center', marginVertical: spacing.md }, overlay: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: spacing.xl, backgroundColor: colors.deep + '99' }, dialog: { width: '100%', maxWidth: 420, padding: spacing.xl, backgroundColor: colors.ivory, borderRadius: radius.lg }, dialogText: { marginVertical: spacing.lg },
 });
+

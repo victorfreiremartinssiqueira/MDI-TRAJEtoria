@@ -1,7 +1,7 @@
 ﻿import React, { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, Image, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useAuthDatabase } from '../../src/context/AuthContext';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path } from 'react-native-svg';
@@ -19,7 +19,7 @@ function Choice({ label, selected, disabled, onPress, icon, accessibilityLabel }
 }
 export default function Feedback() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const db = useSQLiteContext();
+  const db = useAuthDatabase();
   const router = useRouter();
   const { width } = useWindowDimensions();
   const [order, setOrder] = useState<Order | null>(null);
@@ -109,3 +109,4 @@ const styles = StyleSheet.create({
   sectionTitle: { fontFamily: typography.semibold, color: colors.purpleDark, fontSize: 15, marginTop: spacing.md, marginBottom: 6 }, optional: { fontFamily: typography.regular }, pieceCard: { flexDirection: 'row', alignItems: 'center', gap: 7, backgroundColor: colors.lilacLight, borderRadius: radius.md, padding: 6, marginBottom: 6 }, pieceCardNarrow: { flexDirection: 'column', alignItems: 'stretch' }, pieceIntro: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 8 }, photoFrame: { width: 53, aspectRatio: 1, borderRadius: radius.sm, overflow: 'hidden', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.lilac }, photo: { width: '100%', height: '100%' }, pieceName: { fontFamily: typography.semibold, fontSize: 13, lineHeight: 17, color: colors.purpleDark }, pieceSize: { fontSize: 11, lineHeight: 16, marginTop: 2 }, choices: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', flexWrap: 'wrap', gap: 5 }, choice: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, minHeight: 40, borderRadius: radius.pill, paddingHorizontal: 9, paddingVertical: 5, borderWidth: 1, borderColor: colors.purple }, choiceSelected: { backgroundColor: colors.purpleDark }, choiceLabel: { fontFamily: typography.medium, fontSize: 11, color: colors.purpleDark }, choiceLabelSelected: { color: colors.white },
   interview: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 8, borderRadius: radius.md, backgroundColor: colors.warningBg, padding: 10, marginTop: 8 }, interviewQuestion: { flexDirection: 'row', alignItems: 'center', gap: 9, flex: 1, minWidth: 170 }, question: { flex: 1, fontSize: 12, lineHeight: 16 }, commentFrame: { borderWidth: 1, borderColor: colors.lavender, borderRadius: radius.md, padding: 11 }, comment: { minHeight: 66, fontFamily: typography.regular, color: colors.text, fontSize: 13, lineHeight: 18, textAlignVertical: 'top', padding: 0 }, counter: { fontSize: 10, lineHeight: 15, textAlign: 'right', color: colors.muted }, error: { color: colors.danger, fontSize: 13, marginTop: spacing.sm }, required: { color: colors.muted, fontSize: 11, lineHeight: 15, marginTop: spacing.sm }, send: { marginTop: spacing.lg, borderRadius: radius.pill, shadowColor: colors.purpleDark, shadowOpacity: .18, shadowOffset: { width: 0, height: 4 }, shadowRadius: 7, elevation: 3 }, sendInner: { minHeight: 53, borderRadius: radius.pill, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 13, padding: 12 }, sendLabel: { fontFamily: typography.semibold, fontSize: 16, color: colors.white }, disabled: { opacity: .5 }, overlay: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: spacing.xl, backgroundColor: colors.deep + '99' }, dialog: { width: '100%', maxWidth: 420, backgroundColor: colors.ivory, borderRadius: radius.lg, padding: spacing.xl }, dialogText: { marginVertical: spacing.lg },
 });
+

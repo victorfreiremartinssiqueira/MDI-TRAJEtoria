@@ -2,7 +2,7 @@
 import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useAuthDatabase } from '../../src/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path } from 'react-native-svg';
 import { colors, typography, radius, spacing, config } from '../../src/constants/theme';
@@ -17,7 +17,7 @@ type Panel = 'address' | 'privacy' | 'support' | 'logout' | 'notifications';
 export default function Profile() {
   const { logout } = useAuth();
   const router = useRouter();
-  const db = useSQLiteContext();
+  const db = useAuthDatabase();
   const [young, setYoung] = useState<Young | null>(null);
   const [consent, setConsent] = useState<Awaited<ReturnType<typeof getLatestConsent>>>(null);
   const [loading, setLoading] = useState(true);
@@ -80,3 +80,4 @@ const styles = StyleSheet.create({
   content: { paddingHorizontal: spacing.lg, paddingBottom: spacing.lg, flexGrow: 1 }, card: { backgroundColor: colors.ivory, borderRadius: radius.lg, paddingHorizontal: spacing.md, paddingTop: 12, paddingBottom: 4, borderWidth: 1, borderColor: colors.lilacLight, shadowColor: colors.deep, shadowOpacity: .04, shadowRadius: 10, shadowOffset: { width: 0, height: 4 }, elevation: 1 }, sectionLabel: { fontFamily: typography.semibold, fontSize: 10, letterSpacing: 2, color: colors.text, marginBottom: 4 }, dataRow: { flexDirection: 'row', alignItems: 'center', gap: 13, paddingVertical: 10, minHeight: 58 }, dataIcon: { width: 42, height: 40, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.lilacLight }, dataLabel: { color: colors.muted, fontSize: 11, lineHeight: 15 }, dataValue: { fontFamily: typography.medium, fontSize: 15, lineHeight: 20 }, line: { borderBottomWidth: 1, borderBottomColor: colors.line }, accountLabel: { fontFamily: typography.semibold, fontSize: 10, letterSpacing: 2, color: colors.text, marginVertical: spacing.lg, marginLeft: 12 }, menuCard: { backgroundColor: colors.ivory, borderRadius: radius.lg, paddingHorizontal: spacing.md, borderWidth: 1, borderColor: colors.lilacLight, shadowColor: colors.deep, shadowOpacity: .03, shadowRadius: 8, shadowOffset: { width: 0, height: 3 }, elevation: 1 }, menuRow: { flexDirection: 'row', alignItems: 'center', gap: 16, minHeight: 51, paddingVertical: 10 }, menuLabel: { flex: 1, fontSize: 13, fontFamily: typography.medium }, logout: { alignSelf: 'center', flexDirection: 'row', alignItems: 'center', gap: 10, minHeight: 48, paddingHorizontal: spacing.md, marginTop: spacing.md }, logoutLabel: { fontFamily: typography.medium, color: colors.purpleDark, fontSize: 14 },
   overlay: { flex: 1, padding: spacing.xl, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.deep + '99' }, dialog: { width: '100%', maxWidth: 480, maxHeight: '85%', backgroundColor: colors.ivory, borderRadius: radius.lg, overflow: 'hidden' }, dialogContent: { padding: spacing.xl }, details: { gap: 12, marginVertical: spacing.lg }, detailRow: { borderBottomWidth: 1, borderBottomColor: colors.line, paddingBottom: 7 }, note: { fontSize: 12, lineHeight: 17, color: colors.muted }, termTitle: { fontFamily: typography.semibold, marginTop: spacing.sm }, paragraph: { marginVertical: spacing.lg },
 });
+

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path } from 'react-native-svg';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useAuthDatabase } from '../../src/context/AuthContext';
 import { BottomNav, BrandMark, Button, Heading, BodyText, IconView, StateView } from '../../src/components/Design';
 import { listOrders } from '../../src/database/repositories';
 import type { Order } from '../../src/types/models';
@@ -13,7 +13,7 @@ import { dateShort, statusLabels } from '../../src/utils/format';
 
 export default function OrderHistory() {
   const [notifications, setNotifications] = useState(false);
-  const db = useSQLiteContext();
+  const db = useAuthDatabase();
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,4 +60,5 @@ const styles = StyleSheet.create({
   title: { fontFamily: typography.semibold, color: colors.purpleDark, fontSize: 17 },
   date: { color: colors.muted, fontSize: 12 },
 });
+
 

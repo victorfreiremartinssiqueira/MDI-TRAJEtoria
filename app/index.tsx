@@ -7,11 +7,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Circle, Defs, G, LinearGradient as SvgGradient, Path, Stop } from 'react-native-svg';
 import { useRouter } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+
 import { Heading, BodyText, IconView } from '../src/components/Design';
 import { colors, typography, config, spacing, radius } from '../src/constants/theme';
 import { useAuth } from '../src/context/AuthContext';
-import { hasConsent } from '../src/database/repositories';
+
 
 // The approved mark is drawn as vectors so it stays sharp at every screen size.
 function AccessMark() {
@@ -60,7 +60,7 @@ function AccessFooter() {
 
 export default function Login() {
   const router = useRouter();
-  const db = useSQLiteContext();
+
   const { login } = useAuth();
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
@@ -81,7 +81,7 @@ export default function Login() {
         setError('Identificação ou senha inválida. Confira e tente novamente.');
         return;
       }
-      router.replace(await hasConsent(db) ? '/(jovem)/inicio' : '/consentimento');
+      router.replace('/consentimento');
     } catch {
       setError('Não foi possível acessar. Tente novamente.');
     } finally {
@@ -97,7 +97,7 @@ export default function Login() {
             style={[styles.hero, { paddingTop: insets.top + spacing.lg }]}>
             <AccessMark />
             <Text accessibilityLabel="TRAJEtória" style={styles.wordmark} maxFontSizeMultiplier={1.2}>TRAJEtória</Text>
-            <Text style={styles.tagline} maxFontSizeMultiplier={1.2}>MODA · INCLUSÃO · OPORTUNIDADE</Text>
+            <Text style={styles.tagline} maxFontSizeMultiplier={1.2}>SE SERVE PARA VOCÊ, SERVE PARA O MUNDO</Text>
             <Svg width="100%" height={65} viewBox="0 0 390 65" preserveAspectRatio="none" style={styles.heroWave} accessible={false}>
               <Path d="M0 46 C103 -5 218 111 390 3 L390 65 L0 65Z" fill={colors.lavender} opacity=".45" />
               <Path d="M0 49 C103 -6 225 103 390 37 L390 65 L0 65Z" fill={colors.ivory} />
@@ -180,3 +180,4 @@ const styles = StyleSheet.create({
   bottom: { flexGrow: 1, minHeight: 105, justifyContent: 'flex-end', marginTop: spacing.sm },
   footer: { height: 100, width: '100%' },
 });
+

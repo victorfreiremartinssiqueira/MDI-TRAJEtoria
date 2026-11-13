@@ -2,7 +2,7 @@
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View, type ImageSourcePropType } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useAuthDatabase } from '../../../src/context/AuthContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path } from 'react-native-svg';
 import { BottomNav, BrandMark, Heading, BodyText, Button, IconView, StateView } from '../../../src/components/Design';
@@ -14,7 +14,7 @@ import { registeredPhoto } from '../../../src/constants/pictures';
 type Notice = { title: string; message: string; success?: boolean };
 export default function Detail() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const db = useSQLiteContext();
+  const db = useAuthDatabase();
   const router = useRouter();
   const [piece, setPiece] = useState<Piece | null>(null);
   const [gallery, setGallery] = useState<ImageSourcePropType[]>([]);
@@ -113,3 +113,4 @@ const styles = StyleSheet.create({
   actions: { flexDirection: 'row', gap: 10, marginTop: spacing.lg }, backButton: { flex: 1, minHeight: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 5, borderRadius: radius.pill, borderWidth: 1, borderColor: colors.purple }, backLabel: { fontFamily: typography.semibold, fontSize: 13, color: colors.purpleDark }, addButton: { flex: 1.75, borderRadius: radius.pill, overflow: 'hidden' }, addInner: { flex: 1, minHeight: 44, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7, paddingHorizontal: 8, paddingVertical: 7, borderRadius: radius.pill }, addLabel: { flexShrink: 1, textAlign: 'center', fontFamily: typography.medium, fontSize: 13, color: colors.white }, disabled: { opacity: .5 }, unavailable: { fontSize: 13, color: colors.danger, marginTop: spacing.sm },
   overlay: { flex: 1, padding: spacing.xl, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.deep + '99' }, dialog: { width: '100%', maxWidth: 420, padding: spacing.xl, borderRadius: radius.lg, backgroundColor: colors.ivory }, notice: { marginVertical: spacing.lg },
 });
+

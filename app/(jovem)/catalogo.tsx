@@ -1,7 +1,7 @@
 ﻿import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useAuthDatabase } from '../../src/context/AuthContext';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Ellipse, Path } from 'react-native-svg';
@@ -17,7 +17,7 @@ type Filter = 'category' | 'gender' | 'size';
 type Notice = { title: string; message: string; success?: boolean };
 
 export default function Catalog() {
-  const db = useSQLiteContext();
+  const db = useAuthDatabase();
   const router = useRouter();
   const { young } = useAuth();
   const { width } = useWindowDimensions();
@@ -192,3 +192,4 @@ const styles = StyleSheet.create({
   options: { marginVertical: spacing.lg }, option: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.sm, alignItems: 'center', paddingVertical: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.line },
   selectedOption: { fontFamily: typography.semibold, color: colors.purpleDark }, notice: { marginVertical: spacing.lg },
 });
+
